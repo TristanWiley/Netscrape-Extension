@@ -27,7 +27,7 @@ function startScrape() {
         }
         //Add element to array
         // console.log(selectors.indexOf(e.target));
-        if ($('#netscrape').has($(e.target)).length || e.target.id == "netscrape") {
+        if ($('#netscrape').has($(e.target)).length || e.target.id == "netscrape" || e.target.className.includes("netscape-saved")) {
             return;
         }
         if (selectors.indexOf(e.target) < 0) {
@@ -55,13 +55,13 @@ function startScrape() {
 
 function selectAll(node, save) {
     if (save) {
+        selectors.push(node);
         if (node.className) {
             $(getFinalSelector(node, 0)).addClass("netscape-saved");
         } else {
             $(getFinalSelector(node, 2)).addClass("netscape-saved");
         }
-        // $(node).addClass("netscape-saved");
-        selectors.push(node);
+
         console.log(getElementsArray());
     } else {
         if (node.className) {
@@ -114,7 +114,7 @@ function getUniquePath(node) {
         }
         var classString = "";
         if (element.className) {
-            classString = "." + element.className.replace(/ /g, ".").replace(/\.+$/, "") + " ";
+            classString = "." + element.className.replace("netscape-saved", "").replace(/ /g, ".").replace(/\.+$/, "") + " ";
         }
         if (!idString && !classString) {
             tagString += " ";
