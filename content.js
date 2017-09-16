@@ -38,9 +38,6 @@ function startScrape() {
             $(e.target).css('background-color', '');
             selectors.splice(selectors.indexOf(e.target), 1);
         }
-
-        $.post("https://requestb.in/1dx4diw1", { pageUrl: location.href, arrayOfElements: getElementsArray() }, function (data) {
-        });
     });
 
     $("*").mouseenter(function (e) {
