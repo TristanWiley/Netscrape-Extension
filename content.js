@@ -5,13 +5,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 var selectors = [];
+var text_elements = "a, h1, h2, h3, h4, h5, h6, p, span, b, strong, i, em, div:empty"
 
 function startScrape() {
     // Make it so whenever you hover on an element it outlines it.
-    $('head').append('<style>*:hover{border: 1px solid black} #netscrape{width: 350px; height: auto; padding: 15px; text-align: center; position: fixed; background-color: red; top: 0; right: 15%; z-index: 1000000000000; } #netscrape * {border: none; text-align: center;}</style>');
+    $('head').append('<style>*:hover{border: 1px solid black} #netscrape{width: 350px; height: auto; padding: 15px; text-align: center; position: fixed; background-color: red; top: 0; right: 15%; z-index: 1000000000000; } #netscrape * {border: none; text-align: center;} .netscape-saved{background-color: yellow}</style>');
 
     //Add a click listener for everything so we can capture it.
-    $("*").click(function (e) {
+    $(text_elements).click(function (e) {
         //Make it so when you click on stuff it doesn't do what it normally would
         e.preventDefault();
         //Stop all the parent elements from doing the same
@@ -32,36 +33,46 @@ function startScrape() {
         if (selectors.indexOf(e.target) < 0) {
             //Highlight element
             $(e.target).css('background-color', 'yellow');
-
-            selectors.push(e.target)
+            selectAll(e.target, true)
         } else {
             $(e.target).css('background-color', '');
             selectors.splice(selectors.indexOf(e.target), 1);
         }
     });
 
-    $("*").mouseenter(function (e) {
+    $(text_elements).mouseenter(function (e) {
+        // e.stopPropagation();
         selectAll(e.target)
     });
-    
-    $("*").mouseleave(function (e) {
-        deselectAll(e.target)        
+
+    $(text_elements).mouseleave(function (e) {
+        // e.stopPropagation();
+        deselectAll(e.target)
     });
 
     showBox();
 }
 
-function selectAll(node) {
-    console.log(node);
-    if (node.className) {
-        $(getFinalSelector(node)).css('background-color', 'yellow');
+function selectAll(node, save) {
+    if (save) {
+        $(node).addClass("netscape-saved");
+        selectors.push(node);
+        console.log(getElementsArray());
+    } else {
+        if (node.className) {
+            $(getFinalSelector(node, 0)).css('background-color', 'yellow');
+        } else {
+            $(getFinalSelector(node, 2)).css('background-color', 'yellow');
+        }
     }
 }
 
 function deselectAll(node) {
-    console.log(node);
+    // console.log(node);
     if (node.className) {
-        $(getFinalSelector(node)).css('background-color', '');
+        $(getFinalSelector(node, 0)).css('background-color', '');
+    } else {
+        $(getFinalSelector(node, 2)).css('background-color', '');
     }
 }
 
@@ -108,6 +119,7 @@ function getUniquePath(node) {
     return outputString.replace(/\s+/g, ' ').trim();
 }
 
-function getFinalSelector(node) {
-    return node.tagName + "." + node.className.replace(/ /g, ".").replace(/\.+$/, "");
+function getFinalSelector(node, parentCount) {
+    var nPar = $(node).parents().addBack().toArray().reverse()[parentCount];
+    return nPar.tagName + "." + nPar.className.replace(/ /g, ".").replace(/\.+$/, "");
 }
