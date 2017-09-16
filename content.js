@@ -55,7 +55,12 @@ function startScrape() {
 
 function selectAll(node, save) {
     if (save) {
-        $(node).addClass("netscape-saved");
+        if (node.className) {
+            $(getFinalSelector(node, 0)).addClass("netscape-saved");
+        } else {
+            $(getFinalSelector(node, 2)).addClass("netscape-saved");
+        }
+        // $(node).addClass("netscape-saved");
         selectors.push(node);
         console.log(getElementsArray());
     } else {
