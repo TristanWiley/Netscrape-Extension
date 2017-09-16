@@ -7,6 +7,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 var selectors = [];
 
 function startScrape() {
+    // Make it so whenever you hover on an element it outlines it.
+    $('head').append('<style>*:hover{border: 1px solid black} #netscrape{width: 350px; height: auto; padding: 15px; text-align: center; position: fixed; background-color: red; top: 0; right: 15%; z-index: 1000000000000; } #netscrape * {border: none; text-align: center;}</style>');
+
     //Add a click listener for everything so we can capture it.
     $("*").click(function (e) {
         //Make it so when you click on stuff it doesn't do what it normally would
@@ -14,8 +17,15 @@ function startScrape() {
         //Stop all the parent elements from doing the same
         e.stopPropagation();
 
+        if(e.target.id == "netscrape-submit"){
+            submitStuff(selectors);
+            return;
+        }
         //Add element to array
         console.log(selectors.indexOf(e.target));
+        if($('#netscrape').has($(e.target)).length || e.target.id == "netscrape"){
+            return;
+        }
         if (selectors.indexOf(e.target) < 0) {
             //Highlight element
             $(e.target).css('background-color', 'yellow');
@@ -26,28 +36,30 @@ function startScrape() {
             selectors.splice(selectors.indexOf(e.target), 1);
         }
 
-        // $.post("https://requestb.in/1dx4diw1", { uniquePath: getUniquePath(e.target) }, function (data) {
-        // });
+        $.post("https://requestb.in/1dx4diw1", { pageUrl: location.href, arrayOfElements: getElementsArray() }, function (data) {
+        });
     });
 
-    // Make it so whenever you hover on an element it outlines it.
-    $('head').append('<style>*:hover{border: 1px solid black}</style>');
+    showBox();
+}
 
-    // This was replaced by the above style injection
-    // $('*').hover(
-    //     function (e) {
-    //         $(this).css('border', '1px solid black');
-    //         e.preventDefault();
-    //         e.stopPropagation();
-    //         return false;
-    //     }, function (e) {
-    //         $(this).css('border', 'none');
-    //         e.preventDefault();
-    //         e.stopPropagation();
-    //         return false;
-    //     }
-    // );
+function getElementsArray() {
+    var pathsArray = [];
+    selectors.forEach(function (item) {
+        pathsArray.push(getUniquePath(item));
+    });
+    return pathsArray;
+}
 
+function showBox() {
+    $('body').append('<div id="netscrape"> <h3 style="color: white;">Netscrape</h3> <button>Toggle Element Selection</button> <br><br> <input type="text" placeholder="URL Pattern"> <button id="netscrape-submit">Scrape this Site!</div>');
+}
+
+function submitStuff(){
+    var json = JSON.stringify({url: location.href, arrayOfElements: getElementsArray()});
+    $.post("https://requestb.in/1dx4diw1", { pageUrl: location.href, arrayOfElements: getElementsArray() }, function (data) {
+        location.href
+    });
 }
 
 function getUniquePath(node) {
