@@ -17,13 +17,16 @@ function startScrape() {
         //Stop all the parent elements from doing the same
         e.stopPropagation();
 
-        if(e.target.id == "netscrape-submit"){
+
+        selectAll(e.target);
+
+        if (e.target.id == "netscrape-submit") {
             submitStuff(selectors);
             return;
         }
         //Add element to array
-        console.log(selectors.indexOf(e.target));
-        if($('#netscrape').has($(e.target)).length || e.target.id == "netscrape"){
+        // console.log(selectors.indexOf(e.target));
+        if ($('#netscrape').has($(e.target)).length || e.target.id == "netscrape") {
             return;
         }
         if (selectors.indexOf(e.target) < 0) {
@@ -40,7 +43,29 @@ function startScrape() {
         });
     });
 
+    $("*").mouseenter(function (e) {
+        selectAll(e.target)
+    });
+    
+    $("*").mouseleave(function (e) {
+        deselectAll(e.target)        
+    });
+
     showBox();
+}
+
+function selectAll(node) {
+    console.log(node);
+    if (node.className) {
+        $(getFinalSelector(node)).css('background-color', 'yellow');
+    }
+}
+
+function deselectAll(node) {
+    console.log(node);
+    if (node.className) {
+        $(getFinalSelector(node)).css('background-color', '');
+    }
 }
 
 function getElementsArray() {
@@ -55,16 +80,16 @@ function showBox() {
     $('body').append('<div id="netscrape"> <h3 style="color: white;">Netscrape</h3> <button>Toggle Element Selection</button> <br><br> <input type="text" placeholder="URL Pattern"> <button id="netscrape-submit">Scrape this Site!</div>');
 }
 
-function submitStuff(){
-    var json = JSON.stringify({url: location.href, arrayOfElements: getElementsArray()});
+function submitStuff() {
+    var json = JSON.stringify({ url: location.href, arrayOfElements: getElementsArray() });
     $.post("https://requestb.in/1dx4diw1", { pageUrl: location.href, arrayOfElements: getElementsArray() }, function (data) {
         location.href
     });
 }
 
+
 function getUniquePath(node) {
 
-    var elements = [];
     var outputString = "";
     var elements = $(node).parents().addBack().toArray();
 
@@ -84,4 +109,8 @@ function getUniquePath(node) {
         outputString += " " + tagString + idString + classString;
     });
     return outputString.replace(/\s+/g, ' ').trim();
+}
+
+function getFinalSelector(node) {
+    return node.tagName + "." + node.className.replace(/ /g, ".").replace(/\.+$/, "");
 }
