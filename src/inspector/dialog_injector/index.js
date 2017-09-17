@@ -372,6 +372,7 @@ export function injectDialog() {
 
   // On "I'm Done, open page"
   $('#netscrape-btn-done').click(() => {
-     window.location.href = 'http://34.228.142.72/?ext=' + chosenSelectors.join('!')
+    const currentUrl = window.location.href
+    window.location.href = 'http://34.228.142.72/?ext=' + chosenSelectors.join('!') + '&url=' + currentUrl
   })
 }
