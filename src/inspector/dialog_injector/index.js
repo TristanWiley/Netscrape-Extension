@@ -352,7 +352,7 @@ export function injectDialog() {
         top: '0',
         opacity: 1,
       })
-      
+
     }
   })
 
@@ -361,4 +361,26 @@ export function injectDialog() {
     top: '0',
     opacity: 1,
   })
+
+  //Moving horizontally
+  var contextmenu = document.getElementById('netscrape-dialog');
+  var initX, initY, mousePressX;
+
+  document.getElementById('netscrape-dialog-toggle').addEventListener('mousedown', function (event) {
+
+    initX =  contextmenu.offsetLeft;
+    initY =  contextmenu.offsetTop;
+    mousePressX = event.clientX;
+
+    document.getElementById('netscrape-dialog-toggle').addEventListener('mousemove', repositionElement, false);
+
+    window.addEventListener('mouseup', function () {
+      document.getElementById('netscrape-dialog-toggle').removeEventListener('mousemove', repositionElement, false);
+    }, false);
+
+  }, false);
+
+  function repositionElement(event) {
+     document.getElementById('netscrape-dialog').style.left = initX + event.clientX - mousePressX + 'px';
+  }
 }
