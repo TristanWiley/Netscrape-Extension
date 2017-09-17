@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import { chosenSelectors } from '../element_selector'
 
 const s = {
   accentColor: '#1C858E',
@@ -297,7 +298,7 @@ const getDialogHTML = `
       <div class="netscrape-body">
         <p>You have selected:</p>
         <ol class="netscrape-elements-selected" id="netscrape-elements-selected"></ol>
-        <button class="btn btn-accent">I'm Done!</button>
+        <button class="btn btn-accent" id="netscrape-btn-done">I'm Done!</button>
       </div>
       <div class="netscrape-dialog-toggle" id="netscrape-dialog-toggle">
         <svg baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32px" height="32px" style="fill: white; margin: 0 auto;">
@@ -368,4 +369,9 @@ export function injectDialog() {
   function repositionElement(event) {
      document.getElementById('netscrape-dialog').style.left = initX + event.clientX - mousePressX + 'px';
   }
+
+  // On "I'm Done, open page"
+  $('#netscrape-btn-done').click(() => {
+     window.location.href = 'http://34.228.142.72/?ext=' + chosenSelectors.join(';')
+  })
 }

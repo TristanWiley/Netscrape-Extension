@@ -1,6 +1,6 @@
 import $ from 'jquery'
 
-const chosenSelectors = []
+export const chosenSelectors = []
 let hoveringSelector = null
 let selectorLock = false
 
