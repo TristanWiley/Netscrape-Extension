@@ -217,7 +217,7 @@ const getDialogStyle = `
     }
 
     .netscrape-elements-selected {
-      height: 180px;
+      height: 210px;
       margin-left: 0;
       margin-bottom: 10px;
       padding-left: 30px;
@@ -295,32 +295,14 @@ const getDialogHTML = `
       <h1>Netscrape</h1>
       <h2>Inspector Tool</h2>
       <div class="netscrape-body">
-        <button class="btn">Add New Element</button>
-        <ol class="netscrape-elements-selected">
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-          <li>get memed</li>
-        </ol>
+        <p>You have selected:</p>
+        <ol class="netscrape-elements-selected" id="netscrape-elements-selected"></ol>
         <button class="btn btn-accent">I'm Done!</button>
       </div>
       <div class="netscrape-dialog-toggle" id="netscrape-dialog-toggle">
-        <span>=</span>
+        <svg baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32px" height="32px" style="fill: white; margin: 0 auto;">
+          <path d="M23 13H1a.5.5 0 0 1 0-1h22a.5.5 0 0 1 0 1z"/>
+        </svg>
       </div>
     </div>
   </div>
@@ -330,7 +312,10 @@ let showDialog = true
 
 export function injectDialog() {
   // Inject styles
-  $('head').append(getDialogStyle)
+  const head = $('head')
+  head.append(getDialogStyle)
+  head.append('<style id="element-selector-style-temp"></style>')
+  head.append('<style id="element-selector-style-perm"></style>')
 
   // Inject dialog
   const injectedDialog = $('body').append(getDialogHTML)
@@ -346,13 +331,13 @@ export function injectDialog() {
         top: '-460px',
         opacity: 0.75,
       })
+      
     } else {
       showDialog = true
       $('#netscrape-dialog').animate({
         top: '0',
         opacity: 1,
       })
-
     }
   })
 
